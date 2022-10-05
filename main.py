@@ -16,9 +16,7 @@ async def connect(connection):
 
 @connector.close
 async def disconnect(_):
-    print('The client have been closed!')
-    await connector.stop()
-
+    print('The client has been closed!')
 
 @connector.ws.register('/lol-gameflow/v1/gameflow-phase', event_types=('UPDATE',))
 async def gameflow_phase(connection, event: WebsocketEventResponse):

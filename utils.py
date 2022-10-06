@@ -6,8 +6,11 @@ champions = json.loads(open("champions.json").read())
 def get_champion_name(id):
     return champions.get(id, None)
     
-def open_u_gg(champ):
-    webbrowser.open_new_tab(f"https://u.gg/lol/champions/aram/{champ}-aram")
+def open_u_gg(champ, aram=False):
+    if aram:
+        webbrowser.open_new_tab(f"https://u.gg/lol/champions/aram/{champ}-aram")
+    else:
+        webbrowser.open_new_tab(f"https://u.gg/lol/champions/{champ}/build")
 
 async def get(connection, method, uri):
     response = await connection.request(method, uri)

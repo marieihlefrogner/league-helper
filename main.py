@@ -3,16 +3,14 @@ import time
 from lcu_driver import Connector
 from lcu_driver.events.responses import WebsocketEventResponse
 
-from utils import get_current_champion, open_u_gg
+from game_modes import aram, classic
 
 
 connector = Connector()
 
-
 @connector.ready
 async def connect(connection):
     print('LCU API is ready to be used.')
-
 
 @connector.close
 async def disconnect(_):
@@ -35,27 +33,10 @@ async def gameflow_phase(connection, event: WebsocketEventResponse):
         game_mode = the_map.get("gameMode")
 
         if game_mode == "ARAM":
-            time.sleep(3)
-
-            champ = await get_current_champion(connection)
-
-            if champ:
-                print("Got", champ)
-                open_u_gg(champ)
-
-            seconds_left = 60
-
-            while seconds_left > 0:
-                time.sleep(5)
-                seconds_left -= 5
-
-                new_champ = await get_current_champion(connection)
-
-                if new_champ and new_champ != champ:
-                    champ = new_champ
-
-                    print("Changed champ to", champ)
-                    open_u_gg(champ)
-
+            await aram(connection)
+        elif game_mode == "CLASSIC":
+            await classic(connection)
+        else:
+            print("game mode", game_mode)
 
 connector.start()

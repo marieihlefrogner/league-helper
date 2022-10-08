@@ -4,7 +4,7 @@ from lcu_driver import Connector
 from lcu_driver.events.responses import WebsocketEventResponse
 
 from game_modes import aram, classic
-from utils import debug_print, get_current_summoner, open_u_gg_summoner
+from utils import debug_print, get_current_summoner, open_u_gg_live_game
 
 
 connector = Connector()
@@ -44,7 +44,7 @@ async def gameflow_phase(connection, event: WebsocketEventResponse):
         summoner = await get_current_summoner(connection)
 
         if summoner:
-            open_u_gg_summoner(summoner.get("displayName"))
+            open_u_gg_live_game(summoner.get("displayName"))
 
     else:
         debug_print("gameflow event:", event.data)

@@ -1,9 +1,12 @@
 import json
+import time
 import webbrowser
 
 champions = json.loads(open("champions.json").read())
 local_settings = json.loads(open("local-settings.json").read())
 debug = local_settings.get("debug", False)
+open_live_game = local_settings.get("openLiveGame", False)
+open_build = local_settings.get("openBuild", False)
 
 def debug_print(*s):
     if debug:
@@ -12,13 +15,23 @@ def debug_print(*s):
 def get_champion_name(id):
     return champions.get(id, None)
     
-def open_u_gg(champ, aram=False):
+def open_u_gg_build(champ, aram=False):
+    if not open_build:
+        debug_print("Not opening build because it's disabled in local-settings.json")
+        return
+        
     if aram:
         webbrowser.open_new_tab(f"https://u.gg/lol/champions/aram/{champ}-aram")
     else:
         webbrowser.open_new_tab(f"https://u.gg/lol/champions/{champ}/build")
 
-def open_u_gg_summoner(summoner_name):
+def open_u_gg_live_game(summoner_name):
+    if not open_live_game:
+        debug_print("Not opening live game stats because it's disabled in local-settings.json")
+        return
+
+    time.sleep(5)
+
     server = local_settings.get("server")
 
     if not server:

@@ -2,6 +2,12 @@ import json
 import webbrowser
 
 champions = json.loads(open("champions.json").read())
+local_settings = json.loads(open("local-settings.json").read())
+debug = local_settings.get("debug", False)
+
+def debug_print(*s):
+    if debug:
+        print(s)
 
 def get_champion_name(id):
     return champions.get(id, None)
@@ -12,11 +18,21 @@ def open_u_gg(champ, aram=False):
     else:
         webbrowser.open_new_tab(f"https://u.gg/lol/champions/{champ}/build")
 
+def open_u_gg_summoner(summoner_name):
+    server = local_settings.get("server")
+
+    if not server:
+        print("ERR: local-settings.json is missing key 'server'")
+        return
+
+    debug_print("Opening live game stats for summoner", summoner_name)
+    webbrowser.open(f"https://u.gg/lol/profile/{server}/{summoner_name}/live-game")
+
 async def get(connection, method, uri):
     response = await connection.request(method, uri)
     
     if response.status > 299 or response.status < 200:
-        print("WARN: Failed request with status", response.status)
+        debug_print("WARN: Failed request with status", response.status)
         return None
 
     json = await response.json()
@@ -32,3 +48,12 @@ async def get_current_champion(connection):
         return None    
 
     return get_champion_name(champion)
+
+async def get_current_summoner(connection):
+    response = await connection.request('get', '/lol-summoner/v1/current-summoner')
+
+    if response.status != 200:
+        debug_print("WARN: Failed to get summoner, status:", response.status)
+        return None
+
+    return await response.json()

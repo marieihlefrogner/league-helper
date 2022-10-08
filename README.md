@@ -4,6 +4,7 @@
 
 - [x] Automatically open u.gg page for your champion in ARAM
 - [x] Automatically open u.gg page for locked in champion in CLASSIC
+- [x] Automatically open u.gg page for live game stats (current summoner) when a game is started  
 
 ## Setup
 

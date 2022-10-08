@@ -1,13 +1,16 @@
+from pprint import pprint
+
 from lcu_driver import Connector
 from lcu_driver.events.responses import WebsocketEventResponse
 
 from game_modes import aram, classic
+from utils import debug_print, get_current_summoner, open_u_gg_summoner
 
 
 connector = Connector()
 
 @connector.ready
-async def connect(connection):
+async def connect(_):
     print('LCU API is ready to be used.')
 
 @connector.close
@@ -17,12 +20,12 @@ async def disconnect(_):
 @connector.ws.register('/lol-gameflow/v1/gameflow-phase', event_types=('UPDATE',))
 async def gameflow_phase(connection, event: WebsocketEventResponse):
     if event.data == "ChampSelect":
-        print(event.uri, event.data)
+        debug_print(event.uri, event.data)
 
         response = await connection.request("get", "/lol-gameflow/v1/session")
 
         if response.status != 200:
-            print(response, response.status)
+            debug_print(response, response.status)
             return
 
         session = await response.json()
@@ -35,6 +38,15 @@ async def gameflow_phase(connection, event: WebsocketEventResponse):
         elif game_mode == "CLASSIC":
             await classic(connection)
         else:
-            print("game mode", game_mode)
+            debug_print("game mode", game_mode)
+
+    elif event.data == "GameStart":
+        summoner = await get_current_summoner(connection)
+
+        if summoner:
+            open_u_gg_summoner(summoner.get("displayName"))
+
+    else:
+        debug_print("gameflow event:", event.data)
 
 connector.start()

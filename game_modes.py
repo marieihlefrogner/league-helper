@@ -1,6 +1,6 @@
 import time
 
-from utils import get_current_champion, open_u_gg
+from utils import debug_print, get_current_champion, open_u_gg
 
 
 async def aram(connection):
@@ -9,7 +9,7 @@ async def aram(connection):
     champ = await get_current_champion(connection)
 
     if champ:
-        print("Got", champ)
+        debug_print("Got champion:", champ)
         open_u_gg(champ, aram=True)
 
     seconds_left = 60
@@ -23,7 +23,7 @@ async def aram(connection):
         if new_champ and new_champ != champ:
             champ = new_champ
 
-            print("Changed champ to", champ)
+            debug_print("Changed champion to:", champ)
             open_u_gg(champ, aram=True)
 
 async def classic(connection):
@@ -35,7 +35,7 @@ async def classic(connection):
         champ = await get_current_champion(connection)
 
         if champ:
-            print("Locked in champion", champ)
+            debug_print("Locked in champion:", champ)
             open_u_gg(champ)
             break
 

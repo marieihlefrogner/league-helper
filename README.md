@@ -9,4 +9,5 @@
 ## Setup
 
 - Install lcu_driver with: `pip install lcu-driver` (or `python3 -m pip install lcu-driver`)
+- Edit `local_settings.json` with your server (or keep it as `euw1`)
 - `python3 league_helper.py`
